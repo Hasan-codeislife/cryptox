@@ -28,6 +28,9 @@ Cryptox provides real-time cryptocurrency information, including market trends, 
 2. **Details Screen**  
    Provides in-depth details about a selected cryptocurrency, including market cap, volume, and 24-hour price changes.
 
+![demo-gif](https://github.com/user-attachments/assets/16ac9725-c762-411a-96f8-90c79eae2cbd)
+
+
 ---
 
 ## ✨ **Key Features**
