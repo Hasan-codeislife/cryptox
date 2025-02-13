@@ -1,0 +1,33 @@
+{
+    "data": [
+        {
+            "id": "bitcoin",
+            "rank": "1",
+            "symbol": "BTC",
+            "name": "Bitcoin",
+            "supply": "19812768.0000000000000000",
+            "maxSupply": "21000000.0000000000000000",
+            "marketCapUsd": "2041472998077.7374002777864928",
+            "volumeUsd24Hr": "39731172425.2151880902481058",
+            "priceUsd": "103038.2528114061296371",
+            "changePercent24Hr": "-1.7934475778634106",
+            "vwap24Hr": "104887.9204020028934590",
+            "explorer": "https://blockchain.info/"
+        },
+        {
+            "id": "ethereum",
+            "rank": "2",
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "supply": "120501725.2119089500000000",
+            "maxSupply": "21000000.0000000000000000",
+            "marketCapUsd": "402121972467.1430229209695800",
+            "volumeUsd24Hr": "20531933717.0965267881119479",
+            "priceUsd": "3337.0640275895576495",
+            "changePercent24Hr": "-2.4097188137388550",
+            "vwap24Hr": "3303.8824457259118677",
+            "explorer": "https://etherscan.io/"
+        }
+    ],
+    "timestamp": 1737401730745
+}
