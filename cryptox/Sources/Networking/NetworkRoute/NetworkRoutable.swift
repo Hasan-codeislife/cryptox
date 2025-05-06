@@ -35,6 +35,10 @@ protocol Routable {
 extension Routable {
     
     var baseURLString: String {
-        return "https://api.coincap.io/v2/"
+        return "https://rest.coincap.io/v3/"
+    }
+    
+    var apiKey: String {
+        return "fd21f1b5c4738ffa989ff739baed0a38df3e5bcd0ba5ff46b33912faafa09cf7"
     }
 }

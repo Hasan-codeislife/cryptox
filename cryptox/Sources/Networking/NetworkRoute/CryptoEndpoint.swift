@@ -15,9 +15,9 @@ enum CryptoEndpoint: Routable {
     var path: String {
         switch self {
         case .getCoins(let quantity):
-            return baseURLString + "assets?limit=\(quantity)"
+            return baseURLString + "assets?limit=\(quantity)&apiKey=\(apiKey)"
         case .getCoinDetails(let id):
-            return baseURLString + "assets/\(id)"
+            return baseURLString + "assets/\(id)&apiKey=\(apiKey)"
         }
     }
     
