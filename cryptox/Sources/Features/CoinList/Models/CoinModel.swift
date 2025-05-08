@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CoinModel: Hashable {
+struct CoinModel: Equatable, Hashable {
     
     let id: String
     let name: String

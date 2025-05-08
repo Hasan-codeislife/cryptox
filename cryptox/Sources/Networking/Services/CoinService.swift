@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ComposableArchitecture
 
 protocol CoinServiceProtocol: Sendable {
     func getCoins() async throws -> [CoinNetworkModel]
@@ -45,3 +46,14 @@ extension CoinService {
     }
 }
 
+extension CoinService: DependencyKey {
+    static var liveValue: CoinService {
+        return CoinService(apiManager: ApiManager(client: APIClientURLSession()))
+    }
+}
+
+extension DependencyValues {
+    var service: CoinService {
+        get { self[CoinService.self] }
+    }
+}

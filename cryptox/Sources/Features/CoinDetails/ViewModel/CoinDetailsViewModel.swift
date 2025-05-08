@@ -102,16 +102,16 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
     }
 }
 
-// Using Factory to initialize the ViewModel
-extension CoinDetailsViewModel {
-    static func create(with navigation: NavigationStateProtocol,
-                       domainModel: CoinModel,
-                       initialModel: CoinDetailsModel) -> CoinDetailsViewModel {
-        return CoinDetailsViewModel(
-            navigationState: navigation,
-            service: CoinService.create(),
-            mapper: CoinModelMapper(),
-            domainModel: domainModel, initialModel: initialModel
-        )
-    }
-}
+//// Using Factory to initialize the ViewModel
+//extension CoinDetailsViewModel {
+//    static func create(with navigation: NavigationStateProtocol,
+//                       domainModel: CoinModel,
+//                       initialModel: CoinDetailsModel) -> CoinDetailsViewModel {
+//        return CoinDetailsViewModel(
+//            navigationState: navigation,
+//            service: CoinService.create(),
+//            mapper: CoinModelMapper(),
+//            domainModel: domainModel, initialModel: initialModel
+//        )
+//    }
+//}

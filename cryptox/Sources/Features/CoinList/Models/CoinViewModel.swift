@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CoinViewModel: Identifiable {
+struct CoinViewModel: Equatable, Identifiable {
     
     let id: String
     let name: String
