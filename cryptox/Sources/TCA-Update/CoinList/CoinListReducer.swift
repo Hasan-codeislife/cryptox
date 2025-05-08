@@ -9,8 +9,9 @@ import ComposableArchitecture
 import UIKit
 
 @Reducer
-class CoinListReducer: Reducer, @unchecked Sendable {
+class CoinListReducer: @unchecked Sendable {
     
+    @ObservableState
     struct State: Equatable {
         var coins: [CoinViewModel] = []
         var domainCoins: [CoinModel] = []

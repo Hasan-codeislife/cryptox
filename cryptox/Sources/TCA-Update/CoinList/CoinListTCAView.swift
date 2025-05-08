@@ -9,15 +9,15 @@ import SwiftUI
 import ComposableArchitecture
 
 struct CoinListTCAView: View {
-    @Bindable var store: StoreOf<CoinListReducer>
+    let store: StoreOf<CoinListReducer>
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
+        WithPerceptionTracking {
             NavigationStack {
-               GradientBackgroundView {
-                    if viewStore.isLoading {
+                GradientBackgroundView {
+                    if store.isLoading {
                         ProgressView()
-                    } else if viewStore.coins.isEmpty {
+                    } else if store.coins.isEmpty {
                         emptyStateView
                     } else {
                         listContent
@@ -37,7 +37,7 @@ struct CoinListTCAView: View {
                 }
             }
             .onAppear {
-                viewStore.send(.loadCoins)
+                store.send(.loadCoins)
             }
             
         }
