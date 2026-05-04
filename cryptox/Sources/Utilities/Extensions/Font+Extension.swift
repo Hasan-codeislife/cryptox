@@ -5,8 +5,7 @@
 //  Created by Muhammad Hassan Asim on 19.01.25.
 //
 
-import Foundation
-import SwiftUICore
+import SwiftUI
 
 extension Font {
     static func regular(size: CGFloat) -> Font {

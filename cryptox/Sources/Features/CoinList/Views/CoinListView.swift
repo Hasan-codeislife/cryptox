@@ -11,29 +11,28 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
     @StateObject var viewModel: ViewModel
     
     var body: some View {
-        NavigationStack {
-            GradientBackgroundView {
+        GradientBackgroundView {
+            VStack(alignment: .leading, spacing: 0) {
+                CustomTextView(
+                    text: "ui.coinsList.Title".localized.uppercased(),
+                    fontSize: 32,
+                    fontType: .bold
+                )
+                .padding(.horizontal)
+                .padding(.top, 8)
+
                 if viewModel.isLoading {
+                    Spacer()
                     ProgressView()
+                    Spacer()
                 } else if viewModel.coins.isEmpty {
                     emptyStateView
                 } else {
                     listContent
                 }
-                
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    HStack {
-                        CustomTextView(
-                            text: "ui.coinsList.Title".localized.uppercased(),
-                            fontSize: 32,
-                            fontType: .bold
-                        )
-                    }
-                }
             }
         }
+        .toolbar(.hidden, for: .navigationBar)
     }
     
     private var listContent: some View {
