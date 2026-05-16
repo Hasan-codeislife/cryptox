@@ -29,7 +29,7 @@ protocol Routable {
     var path: String { get }
     var params: APIParams? { get }
     
-    var urlRequest: URLRequest { get }
+    var urlRequest: URLRequest? { get }
 }
 
 extension Routable {

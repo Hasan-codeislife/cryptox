@@ -26,7 +26,17 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                WebImageView(url: viewModel.coin.imageURL, width: 40, height: 40)
+                HStack(spacing: 12) {
+                    if viewModel.errorMessage != nil {
+                        Button {
+                            Task { await viewModel.fetchUpdatedCoinData() }
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.customBlack)
+                        }
+                    }
+                    WebImageView(url: viewModel.coin.imageURL, width: 40, height: 40)
+                }
             }
         }
         
@@ -66,6 +76,13 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
                     .overlay(
                         ProgressView()
                     )
+            } else if let message = viewModel.errorMessage {
+                VStack {
+                    Spacer()
+                    CustomTextView(text: message, color: .customRed, fontSize: 13, fontType: .regular)
+                        .padding(.bottom, 16)
+                }
+                .padding(.horizontal, 24)
             }
         }
         .padding(EdgeInsets(top: 24, leading: 24, bottom: 36, trailing: 24))

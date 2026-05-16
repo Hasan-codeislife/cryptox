@@ -25,6 +25,8 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
                     Spacer()
                     ProgressView()
                     Spacer()
+                } else if viewModel.errorMessage != nil {
+                    errorStateView
                 } else if viewModel.coins.isEmpty {
                     emptyStateView
                 } else {
@@ -52,6 +54,21 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
     private var emptyStateView: some View {
         VStack {
             CustomTextView(text: "No coins available.", fontType: .regular)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var errorStateView: some View {
+        VStack(spacing: 16) {
+            CustomTextView(
+                text: viewModel.errorMessage ?? "Something went wrong.",
+                color: .customRed,
+                fontType: .regular
+            )
+            Button("Retry") {
+                Task { await viewModel.fetchCoins() }
+            }
+            .foregroundColor(.customBlue)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

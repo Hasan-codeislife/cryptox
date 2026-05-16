@@ -8,7 +8,8 @@
 import Foundation
 
 enum NetworkError: Error, Equatable {
-    
+
+    case invalidURL
     case apiResponseError
     case unknown(String) // Captures a default-like case with a description
     
@@ -35,7 +36,7 @@ struct ApiManager: ApiManagerProtocol {
     }
     
     func makeNetworkCall<T: Decodable>(router: Routable) async throws -> T {
-        let urlRequest = router.urlRequest
+        guard let urlRequest = router.urlRequest else { throw NetworkError.invalidURL }
         let response = try await apiClient.dataTask(urlRequest)
         let decoder = JSONDecoder()
         let apiResponse = try decoder.decode(T.self, from: response.data)

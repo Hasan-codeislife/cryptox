@@ -14,6 +14,7 @@ protocol CoinDetailsViewModelProtocol: ObservableObject {
     var coin: CoinDetailsModel { get set }
     var domainModel: CoinModel { get set }
     var isLoading: Bool { get }
+    var errorMessage: String? { get }
     var navigationState: NavigationStateProtocol { get set }
     var service: CoinServiceProtocol { get set }
     var mapper: CoinModelMapperProtocol { get set }
@@ -25,6 +26,7 @@ protocol CoinDetailsViewModelProtocol: ObservableObject {
 @MainActor
 class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
     @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
     @Published var coin: CoinDetailsModel
     
     var domainModel: CoinModel
@@ -56,6 +58,7 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
     // MARK: - Fetch Updated Data
     func fetchUpdatedCoinData() async {
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
         do {
             let response = try await service.getCoinDetails(with: domainModel.id)
@@ -65,8 +68,8 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
             self.domainModel = domainModel
             self.coin = coin
         } catch {
-            // Handle errors (e.g., show a popup, log)
             log("Error: \(error.localizedDescription)")
+            errorMessage = "Failed to load data. Please try again."
         }
     }
     

@@ -13,6 +13,7 @@ protocol CoinListViewModelProtocol: ObservableObject {
     var coins: [CoinViewModel] { get }
     var domainCoins: [CoinModel] { get }
     var isLoading: Bool { get }
+    var errorMessage: String? { get }
     var navigationState: NavigationStateProtocol { get set }
     var service: CoinServiceProtocol { get set }
     var mapper: CoinModelMapperProtocol { get set }
@@ -27,7 +28,8 @@ protocol CoinListViewModelProtocol: ObservableObject {
 class CoinListViewModel: CoinListViewModelProtocol {
     
     @Published var coins: [CoinViewModel] = []
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
+    @Published var errorMessage: String? = nil
     
     var domainCoins: [CoinModel] = []
     var navigationState: NavigationStateProtocol
@@ -52,14 +54,15 @@ class CoinListViewModel: CoinListViewModelProtocol {
     // MARK: - Methods
     func fetchCoins() async {
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
         do {
             let response = try await service.getCoins()
             domainCoins = mapper.map(response)
             coins = transformToPresentationModels(from: domainCoins)
         } catch {
-            // Handle errors (e.g., show a popup, log)
             log("Error: \(error.localizedDescription)")
+            errorMessage = "Failed to load coins. Please try again."
         }
     }
     

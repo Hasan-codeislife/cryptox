@@ -12,14 +12,14 @@ final class MockNavigationState: NavigationStateProtocol {
     var path: [AppRoute] = []
     
     func navigate(to destination: AppRoute) {
-        path = [destination]
+        path.append(destination)
     }
-    
+
     func navigateBack() {
         path.removeLast()
     }
-    
+
     func navigateToRoot() {
-        // not implemented
+        path.removeAll()
     }
 }

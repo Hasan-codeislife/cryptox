@@ -9,7 +9,7 @@ import Foundation
 @testable import cryptox
 
 enum MockNetworkData {
-    static let baseURL: String = "https://api.coincap.io/v2/"
+    static let baseURL: String = "https://rest.coincap.io/v3/"
     
     static let coins: [CoinNetworkModel] = [
         CoinNetworkModel(
