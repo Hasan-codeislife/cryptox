@@ -17,6 +17,7 @@ import Foundation
 protocol CoinModelMapperProtocol {
     func map(_ response: [CoinNetworkModel]) -> [CoinModel]
     func map(_ response: CoinNetworkModel) -> CoinModel?
+    func mapToDetails(_ domain: CoinModel) -> CoinDetailsModel?
 }
 
 struct CoinModelMapper: CoinModelMapperProtocol {
@@ -63,6 +64,31 @@ struct CoinModelMapper: CoinModelMapperProtocol {
             marketCapUsd: marketCapUsd,
             volumeUsd24Hr: volumeUsd24Hr,
             supply: supply
+        )
+    }
+
+    func mapToDetails(_ domain: CoinModel) -> CoinDetailsModel? {
+        guard let formattedPrice = domain.priceUsd.formattedAsCurrencyWithAbbreviations(),
+              let formattedPercentage = domain.changePercent24Hr.formattedAsPercentageWithSymbol(),
+              let formattedMarketCap = domain.marketCapUsd.formattedAsCurrencyWithAbbreviations(),
+              let formattedVolume = domain.volumeUsd24Hr.formattedAsCurrencyWithAbbreviations(),
+              let formattedSupply = domain.supply.formattedAsCurrencyWithAbbreviations()
+        else {
+            log("Error: Failed to format domain model values.")
+            return nil
+        }
+
+        return CoinDetailsModel(
+            id: domain.id,
+            name: domain.name.uppercased(),
+            symbol: domain.symbol,
+            imageURL: domain.imageURL,
+            priceUsd: formattedPrice,
+            changePercent24Hr: formattedPercentage,
+            marketCapUsd: formattedMarketCap,
+            volumeUsd24Hr: formattedVolume,
+            supply: formattedSupply,
+            isPositiveChange: domain.changePercent24Hr >= 0
         )
     }
 }

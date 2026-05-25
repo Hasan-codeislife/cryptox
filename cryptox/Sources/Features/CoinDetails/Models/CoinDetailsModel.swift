@@ -5,10 +5,10 @@
 //  Created by Muhammad Hassan Asim on 19.01.25.
 //
 
-import SwiftUI
+import Foundation
 
 struct CoinDetailsModel: Hashable {
-    
+
     let id: String
     let name: String
     let symbol: String
@@ -18,5 +18,5 @@ struct CoinDetailsModel: Hashable {
     let marketCapUsd: String
     let volumeUsd24Hr: String
     let supply: String
-    let changeColor: Color
+    let isPositiveChange: Bool
 }

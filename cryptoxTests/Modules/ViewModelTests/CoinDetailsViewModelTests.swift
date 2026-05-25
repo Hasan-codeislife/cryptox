@@ -43,8 +43,8 @@ final class CoinDetailsViewModelTests {
     }
 
     @Test func transformToPresentationModel() throws {
-        let result = try #require(CoinDetailsViewModel.transformToPresentationModels(from: domainModel))
-        #expect(result == domainModel, "Mapping of network model at index \(index) to domain model failed.")
+        let result = try #require(CoinModelMapper().mapToDetails(domainModel))
+        #expect(result == domainModel, "Mapping domain model to presentation model failed.")
     }
 }
 
@@ -68,6 +68,6 @@ extension CoinDetailsModel {
         lhs.marketCapUsd == formattedMarketCap &&
         lhs.volumeUsd24Hr == formattedVolume &&
         lhs.supply == formattedSupply &&
-        lhs.changeColor == (rhs.changePercent24Hr >= 0 ? .customGreen : .customRed)
+        lhs.isPositiveChange == (rhs.changePercent24Hr >= 0)
     }
 }

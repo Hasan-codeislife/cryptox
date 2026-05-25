@@ -103,7 +103,7 @@ class CoinListViewModel: CoinListViewModelProtocol {
             return nil
         }
         
-        guard let detailsModel = CoinDetailsViewModel.transformToPresentationModels(from: domainModel)
+        guard let detailsModel = mapper.mapToDetails(domainModel)
         else {
             log("Warning: Failed to convert domain model to presentation model for ID: \(coinID)")
             return nil

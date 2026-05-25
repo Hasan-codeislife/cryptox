@@ -49,7 +49,7 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
                                    value: viewModel.coin.priceUsd)
                 CoinDetailsRowView(label: "ui.coinDetails.changeTitle".localized,
                                    value: viewModel.coin.changePercent24Hr,
-                                   valueColor: viewModel.coin.changeColor)
+                                   valueColor: viewModel.coin.isPositiveChange ? .customGreen : .customRed)
                 
                 Divider()
                     .frame(minHeight: 1)

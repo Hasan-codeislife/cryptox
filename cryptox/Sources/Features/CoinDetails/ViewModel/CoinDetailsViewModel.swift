@@ -63,7 +63,7 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
         do {
             let response = try await service.getCoinDetails(with: domainModel.id)
             guard let domainModel = mapper.map(response),
-                  let coin = CoinDetailsViewModel.transformToPresentationModels(from: domainModel)
+                  let coin = mapper.mapToDetails(domainModel)
             else { throw AppError.mapError }
             self.domainModel = domainModel
             self.coin = coin
@@ -71,32 +71,6 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
             log("Error: \(error.localizedDescription)")
             errorMessage = "Failed to load data. Please try again."
         }
-    }
-    
-    // MARK: - Transform Domain to Presentation Model
-    static func transformToPresentationModels(from domain: CoinModel) -> CoinDetailsModel? {
-        guard let formattedPrice = domain.priceUsd.formattedAsCurrencyWithAbbreviations(),
-              let formattedPercentage = domain.changePercent24Hr.formattedAsPercentageWithSymbol(),
-              let formattedMarketCap = domain.marketCapUsd.formattedAsCurrencyWithAbbreviations(),
-              let formattedVolume = domain.volumeUsd24Hr.formattedAsCurrencyWithAbbreviations(),
-              let formattedSupply = domain.supply.formattedAsCurrencyWithAbbreviations()
-        else {
-            log("Error: Failed to format domain model values.")
-            return nil
-        }
-        
-        return CoinDetailsModel(
-            id: domain.id,
-            name: domain.name.uppercased(),
-            symbol: domain.symbol,
-            imageURL: domain.imageURL,
-            priceUsd: formattedPrice,
-            changePercent24Hr: formattedPercentage,
-            marketCapUsd: formattedMarketCap,
-            volumeUsd24Hr: formattedVolume,
-            supply: formattedSupply,
-            changeColor: domain.changePercent24Hr >= 0 ? .customGreen : .customRed
-        )
     }
     
     // MARK: - Navigation

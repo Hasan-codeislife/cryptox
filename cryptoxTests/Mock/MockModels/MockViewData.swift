@@ -19,6 +19,6 @@ enum MockViewData {
         marketCapUsd: "$400,000,000,000",
         volumeUsd24Hr: "$20,000,000,000",
         supply: "120,000,000",
-        changeColor: .green
+        isPositiveChange: true
     )
 }
