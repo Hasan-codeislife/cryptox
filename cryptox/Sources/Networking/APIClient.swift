@@ -15,12 +15,21 @@ protocol APIClientProtocol: Sendable {
 
 struct APIClientURLSession: APIClientProtocol {
     func dataTask(_ request: URLRequest) async throws -> MyURLResponse {
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let response = response as? HTTPURLResponse else {
+        let (data, urlResponse): (Data, URLResponse)
+        do {
+            (data, urlResponse) = try await URLSession.shared.data(for: request)
+        } catch let urlError as URLError where urlError.code == .notConnectedToInternet
+                                            || urlError.code == .networkConnectionLost {
+            throw NetworkError.noConnection
+        }
+        guard let response = urlResponse as? HTTPURLResponse else {
             throw NetworkError.apiResponseError
         }
         guard (200...299).contains(response.statusCode) else {
-            throw NetworkError.httpError(response.statusCode)
+            if (400...499).contains(response.statusCode) {
+                throw NetworkError.clientError(response.statusCode)
+            }
+            throw NetworkError.serverError(response.statusCode)
         }
         return (data, response)
     }

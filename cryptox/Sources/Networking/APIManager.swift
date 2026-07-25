@@ -11,15 +11,33 @@ enum NetworkError: Error, Equatable {
 
     case invalidURL
     case apiResponseError
-    case httpError(Int)
-    case unknown(String) // Captures a default-like case with a description
-    
-    /// Optional initializer to wrap any other Error into MyError
+    case noConnection
+    case clientError(Int)   // 4xx
+    case serverError(Int)   // 5xx
+    case decodingError
+    case unknown(String)
+
+    /// Wraps any Error into a typed NetworkError
     init(_ error: Error) {
         if let myError = error as? NetworkError {
             self = myError
         } else {
             self = .unknown(error.localizedDescription)
+        }
+    }
+
+    var userMessage: String {
+        switch self {
+        case .noConnection:
+            return "No internet connection. Please check your network and try again."
+        case .clientError(let code):
+            return "Request failed (\(code)). Please try again."
+        case .serverError(let code):
+            return "Server error (\(code)). Please try again later."
+        case .decodingError:
+            return "Unexpected response from the server."
+        case .invalidURL, .apiResponseError, .unknown:
+            return "Something went wrong. Please try again."
         }
     }
 }
@@ -39,8 +57,10 @@ struct ApiManager: ApiManagerProtocol {
     func makeNetworkCall<T: Decodable>(router: Routable) async throws -> T {
         guard let urlRequest = router.urlRequest else { throw NetworkError.invalidURL }
         let response = try await apiClient.dataTask(urlRequest)
-        let decoder = JSONDecoder()
-        let apiResponse = try decoder.decode(T.self, from: response.data)
-        return apiResponse
+        do {
+            return try JSONDecoder().decode(T.self, from: response.data)
+        } catch is DecodingError {
+            throw NetworkError.decodingError
+        }
     }
 }

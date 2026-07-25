@@ -61,7 +61,7 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
             self.coin = coin
         } catch {
             log("Error: \(error.localizedDescription)")
-            errorMessage = "Failed to load data. Please try again."
+            errorMessage = NetworkError(error).userMessage
         }
     }
     

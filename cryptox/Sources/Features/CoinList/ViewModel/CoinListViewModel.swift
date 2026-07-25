@@ -53,7 +53,7 @@ class CoinListViewModel: CoinListViewModelProtocol {
             coins = transformToPresentationModels(from: domainCoins)
         } catch {
             log("Error: \(error.localizedDescription)")
-            errorMessage = "Failed to load coins. Please try again."
+            errorMessage = NetworkError(error).userMessage
         }
     }
     
