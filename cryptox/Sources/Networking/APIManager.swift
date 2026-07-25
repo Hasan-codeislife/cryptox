@@ -11,6 +11,7 @@ enum NetworkError: Error, Equatable {
 
     case invalidURL
     case apiResponseError
+    case httpError(Int)
     case unknown(String) // Captures a default-like case with a description
     
     /// Optional initializer to wrap any other Error into MyError

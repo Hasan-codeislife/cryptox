@@ -16,6 +16,7 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
                 cardView
             }
         }
+        .task { await viewModel.fetchUpdatedCoinData() }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 CustomTextView(

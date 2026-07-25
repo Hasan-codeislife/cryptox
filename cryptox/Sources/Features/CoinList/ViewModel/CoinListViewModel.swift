@@ -11,16 +11,11 @@ import Foundation
 @MainActor
 protocol CoinListViewModelProtocol: ObservableObject {
     var coins: [CoinViewModel] { get }
-    var domainCoins: [CoinModel] { get }
     var isLoading: Bool { get }
     var errorMessage: String? { get }
-    var navigationState: NavigationStateProtocol { get set }
-    var service: CoinServiceProtocol { get set }
-    var mapper: CoinModelMapperProtocol { get set }
-    
+
     func fetchCoins() async
     func didTapRow(coinID: String)
-    func prepareModelsForDetails(coinID: String) -> (CoinModel, CoinDetailsModel)?
 }
 
 // MARK: - ViewModel Implementation
@@ -45,10 +40,6 @@ class CoinListViewModel: CoinListViewModelProtocol {
         self.navigationState = navigationState
         self.service = service
         self.mapper = mapper
-        
-        Task {
-            await fetchCoins()
-        }
     }
     
     // MARK: - Methods

@@ -35,6 +35,7 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
+        .task { await viewModel.fetchCoins() }
     }
     
     private var listContent: some View {

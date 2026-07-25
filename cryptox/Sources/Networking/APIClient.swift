@@ -19,6 +19,9 @@ struct APIClientURLSession: APIClientProtocol {
         guard let response = response as? HTTPURLResponse else {
             throw NetworkError.apiResponseError
         }
+        guard (200...299).contains(response.statusCode) else {
+            throw NetworkError.httpError(response.statusCode)
+        }
         return (data, response)
     }
 }

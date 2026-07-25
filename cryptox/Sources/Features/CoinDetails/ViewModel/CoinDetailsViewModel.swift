@@ -11,14 +11,10 @@ import Foundation
 // MARK: - ViewModel Protocol
 @MainActor
 protocol CoinDetailsViewModelProtocol: ObservableObject {
-    var coin: CoinDetailsModel { get set }
-    var domainModel: CoinModel { get set }
+    var coin: CoinDetailsModel { get }
     var isLoading: Bool { get }
     var errorMessage: String? { get }
-    var navigationState: NavigationStateProtocol { get set }
-    var service: CoinServiceProtocol { get set }
-    var mapper: CoinModelMapperProtocol { get set }
-    
+
     func fetchUpdatedCoinData() async
 }
 
@@ -49,10 +45,6 @@ class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
         
         // Initial values before the API call
         self.coin = initialModel
-        
-        Task {
-            await fetchUpdatedCoinData()
-        }
     }
     
     // MARK: - Fetch Updated Data
