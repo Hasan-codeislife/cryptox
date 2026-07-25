@@ -29,5 +29,6 @@ struct CoinListRowView: View {
         .padding()
         .background(Color.customWhite.opacity(0.4))
         .cornerRadius(16)
+        .accessibilityIdentifier("coinRow.\(coin.id)")
     }
 }

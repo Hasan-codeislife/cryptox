@@ -24,6 +24,7 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
                 if viewModel.isLoading {
                     Spacer()
                     ProgressView()
+                        .accessibilityIdentifier("coinList.loading")
                     Spacer()
                 } else if viewModel.errorMessage != nil {
                     errorStateView
@@ -50,13 +51,15 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
             }
             .padding()
         }
+        .accessibilityIdentifier("coinList.list")
     }
-    
+
     private var emptyStateView: some View {
         VStack {
             CustomTextView(text: "No coins available.", fontType: .regular)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityIdentifier("coinList.empty")
     }
 
     private var errorStateView: some View {
@@ -69,8 +72,10 @@ struct CoinListView<ViewModel: CoinListViewModelProtocol>: View {
             Button("Retry") {
                 Task { await viewModel.fetchCoins() }
             }
+            .accessibilityIdentifier("coinList.retryButton")
             .foregroundColor(.customBlue)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityIdentifier("coinList.error")
     }
 }

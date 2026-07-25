@@ -35,6 +35,7 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
                             Image(systemName: "arrow.clockwise")
                                 .foregroundColor(.customBlack)
                         }
+                        .accessibilityIdentifier("coinDetails.refreshButton")
                     }
                     WebImageView(url: viewModel.coin.imageURL, width: 40, height: 40)
                 }
@@ -74,9 +75,8 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
                 Color.white.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
                     .cornerRadius(16)
-                    .overlay(
-                        ProgressView()
-                    )
+                    .overlay(ProgressView())
+                    .accessibilityIdentifier("coinDetails.loading")
             } else if let message = viewModel.errorMessage {
                 VStack {
                     Spacer()
@@ -87,5 +87,6 @@ struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
             }
         }
         .padding(EdgeInsets(top: 24, leading: 24, bottom: 36, trailing: 24))
+        .accessibilityIdentifier("coinDetails.card")
     }
 }

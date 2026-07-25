@@ -43,19 +43,21 @@ final class CoinListViewModelTests {
         #expect(viewModel.coins.count == MockDomainData.coins.count, "Presentation coins should match the domain coins count")
     }
 
-    @Test func transformToPresentationModel() {
+    @Test func fetchCoinsTransformsPresentationModelsCorrectly() async {
+        mockService.mockListResponse = MockNetworkData.coins
+        mockMapper.listMockMappedCoins = MockDomainData.coins
+
+        await viewModel.fetchCoins()
+
         let domainCoins = MockDomainData.coins
-        let results = viewModel.transformToPresentationModels(from: domainCoins)
-        
-        #expect(results.count == domainCoins.count, "Should transform all domain coins to presentation models")
-        
-        // Verify each element in the mapping
+        #expect(viewModel.coins.count == domainCoins.count, "Should transform all domain coins to presentation models")
+
         for (index, domainCoin) in domainCoins.enumerated() {
-            guard index < results.count else {
+            guard index < viewModel.coins.count else {
                 #expect(Bool(false), "Results array does not have expected number of elements.")
                 return
             }
-            #expect(results[index] == domainCoin, "Mapping of network model at index \(index) to domain model failed.")
+            #expect(viewModel.coins[index] == domainCoin, "Mapping at index \(index) failed.")
         }
     }
     

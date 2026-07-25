@@ -57,7 +57,7 @@ class CoinListViewModel: CoinListViewModelProtocol {
         }
     }
     
-    func transformToPresentationModels(from domainCoins: [CoinModel]) -> [CoinViewModel] {
+    private func transformToPresentationModels(from domainCoins: [CoinModel]) -> [CoinViewModel] {
         
         return domainCoins.compactMap { domainModel in
             guard let formattedPrice = domainModel.priceUsd.formattedAsCurrencyWithAbbreviations(),
