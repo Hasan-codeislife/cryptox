@@ -47,16 +47,23 @@ Cryptox provides real-time cryptocurrency information, including market trends, 
 - **Live Data Updates**  
   Reflects real-time market data changes, with formatted values for user-friendly readability.
 
+- **Offline-First Caching**  
+  The coin list is cached to `UserDefaults` after every successful fetch. On relaunch, cached data renders immediately with no loading spinner, and a background refresh only surfaces an error if there's nothing cached to fall back on.
+
+- **Resilient Error States**  
+  Both screens show a dedicated error state with a **Retry** action instead of failing silently, backed by a typed `NetworkError` that maps system/HTTP failures to user-facing copy.
+
 - **Test Coverage**  
-  Around 70% of coverage with comprehensive unit tests, while view-specific tests are yet to be implemented.
+  Around 70% of coverage with comprehensive unit tests, including a mocked `URLSession` layer for testing `APIClient` in isolation, while view-specific tests are yet to be implemented.
 ---
 
 ## 🔧 **Technical Highlights**
 
 ### **1. MVVM Architecture**
 - **Models**: Encapsulate API responses (**CoinNetworkModel**) and domain logic (**CoinModel**). The domain model, by definition, is what the apps functionality and communication mainly depends on.
-- **ViewModels**: Manage business logic and navigation, exposing observable properties for SwiftUI bindings.
+- **ViewModels**: Manage business logic and navigation, exposing observable properties for SwiftUI bindings. Both `CoinListViewModel` and `CoinDetailsViewModel` use the **Observation framework** (`@Observable`) consistently, paired with `@State` in their Views, rather than mixing in the older Combine-based `ObservableObject`/`@Published` pattern.
 - **Views**: Declaratively render the UI with **SwiftUI** bindings.
+- **Caching**: `CoinListViewModel` persists the last successful response to `UserDefaults` and rehydrates from it on init, so the list has content before the first network round-trip completes.
 
 ### **2. Navigation Management**
 - Implements state-driven navigation using **NavigationState** and **AppRoute**.
@@ -77,6 +84,8 @@ This stage is the topmost layer of the network stack, interacting directly with 
     - Centralizing error handling to ensure uniform responses across the app.
     - 
 This is the layer where all interactions with the `ViewModel` take place, bridging the gap between the network stack and the UI logic. When the app grows, more services are created with each pointing to its own use case.
+
+Each stage is defined behind a protocol (`APIClientProtocol`, `ApiManagerProtocol`, `CoinServiceProtocol`) with a corresponding mock, including a mocked `URLSessionProtocol` (`MockURLSession`) used to unit test `APIClient`'s status-code and connectivity-error handling without touching the network or the layers above it.
 
 ### **4. Error Propogation**
 Errors are propagated through all three layers. No error management is done in the lower layers as we didn't have any functionality to implement in this app's scope. However you could catch the error at any time on any layer to do what is needed. Currently the error propogates directly to viewmodel to show, **screen-level popups** or alerts.
@@ -118,7 +127,6 @@ By structuring the network layer in this way, we ensure a robust, maintainable, 
 
 ## 📈 **Improvements**
 
-- **Error Messaging**: Add user-friendly error messages with retry options for API failures.
 - **UI Tests**: Automate end-to-end tests to validate the user experience.
 - **Performance Optimization**: Improve loading times for large datasets.
 - **Performance Optimization**: The size values of setting views like various heights and widths etc are inline. This can be extracted to a class that maintains the whole apps size and dimension of each and every view.
