@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - ViewModel Protocol
 @MainActor
-protocol CoinDetailsViewModelProtocol: ObservableObject {
+protocol CoinDetailsViewModelProtocol: AnyObject {
     var coin: CoinDetailsModel { get }
     var isLoading: Bool { get }
     var errorMessage: String? { get }
@@ -20,10 +20,11 @@ protocol CoinDetailsViewModelProtocol: ObservableObject {
 
 // MARK: - ViewModel Implementation
 @MainActor
+@Observable
 class CoinDetailsViewModel: CoinDetailsViewModelProtocol {
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String? = nil
-    @Published var coin: CoinDetailsModel
+    var isLoading: Bool = false
+    var errorMessage: String? = nil
+    var coin: CoinDetailsModel
     
     var domainModel: CoinModel
     var navigationState: NavigationStateProtocol

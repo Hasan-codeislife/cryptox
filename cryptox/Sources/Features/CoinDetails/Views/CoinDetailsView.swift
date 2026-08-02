@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CoinDetailsView<ViewModel: CoinDetailsViewModelProtocol>: View {
-    @StateObject var viewModel: ViewModel
+    @State var viewModel: ViewModel
     
     var body: some View {
         GradientBackgroundView {

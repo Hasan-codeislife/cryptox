@@ -15,20 +15,29 @@ final class CoinListViewModelTests {
     var mockMapper: MockCoinModelMapper!
     var mockNavigationState: MockNavigationState!
     var viewModel: CoinListViewModel!
+    var testUserDefaults: UserDefaults!
+
+    private let suiteName = "test.coinList.\(UUID().uuidString)"
 
     init() {
+        testUserDefaults = UserDefaults(suiteName: suiteName)
         mockService = MockCoinService()
         mockMapper = MockCoinModelMapper()
         mockNavigationState = MockNavigationState()
         viewModel = CoinListViewModel(
             navigationState: mockNavigationState,
             service: mockService,
-            mapper: mockMapper
+            mapper: mockMapper,
+            userDefaults: testUserDefaults
         )
     }
-    
-    @Test func initialFetchCoinsNetworkCalled() {
-        #expect(viewModel.isLoading, "ViewModel should start in loading state")
+
+    deinit {
+        UserDefaults.standard.removePersistentDomain(forName: suiteName)
+    }
+
+    @Test func initialStateIsNotLoading() {
+        #expect(!viewModel.isLoading, "ViewModel should not be loading before fetchCoins is called")
     }
     
     @Test func fetchCoins() async {
@@ -71,6 +80,64 @@ final class CoinListViewModelTests {
         viewModel.domainCoins = MockDomainData.coins
         let models = viewModel.prepareModelsForDetails(coinID: MockDomainData.randomIncorrectCoinId)
         #expect(models == nil, "Should not be able to navigate to details")
+    }
+
+    // MARK: - Cache
+
+    @Test func coinsAreCachedAfterSuccessfulFetch() async {
+        mockService.mockListResponse = MockNetworkData.coins
+        mockMapper.listMockMappedCoins = MockDomainData.coins
+        await viewModel.fetchCoins()
+
+        // Simulate relaunch: new ViewModel with same UserDefaults suite, no network response
+        let relaunchedViewModel = CoinListViewModel(
+            navigationState: mockNavigationState,
+            service: MockCoinService(),
+            mapper: mockMapper,
+            userDefaults: testUserDefaults
+        )
+
+        #expect(relaunchedViewModel.coins.count == MockDomainData.coins.count,
+                "Relaunched ViewModel should restore coins from cache without a network call")
+    }
+
+    @Test func noLoadingSpinnerWhenCacheExists() async {
+        // Populate cache
+        mockService.mockListResponse = MockNetworkData.coins
+        mockMapper.listMockMappedCoins = MockDomainData.coins
+        await viewModel.fetchCoins()
+
+        // New ViewModel loads from cache — coins non-empty so isLoading stays false
+        let cachedViewModel = CoinListViewModel(
+            navigationState: mockNavigationState,
+            service: mockService,
+            mapper: mockMapper,
+            userDefaults: testUserDefaults
+        )
+
+        #expect(!cachedViewModel.isLoading,
+                "isLoading should be false when cached coins are pre-loaded")
+
+        await cachedViewModel.fetchCoins()
+
+        #expect(!cachedViewModel.isLoading,
+                "isLoading should be false after background refresh completes")
+    }
+
+    @Test func errorNotShownWhenCacheExistsAndFetchFails() async {
+        // Populate cache with a successful fetch
+        mockService.mockListResponse = MockNetworkData.coins
+        mockMapper.listMockMappedCoins = MockDomainData.coins
+        await viewModel.fetchCoins()
+
+        // Now fail the network
+        mockService.shouldThrowError = true
+        await viewModel.fetchCoins()
+
+        #expect(viewModel.errorMessage == nil,
+                "Error message should not be shown when cached coins are available")
+        #expect(!viewModel.coins.isEmpty,
+                "Cached coins should remain visible after a failed refresh")
     }
 }
 

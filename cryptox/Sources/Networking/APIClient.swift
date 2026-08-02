@@ -9,15 +9,27 @@ import Foundation
 
 typealias MyURLResponse = (data: Data, response: HTTPURLResponse)
 
+protocol URLSessionProtocol: Sendable {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse)
+}
+
+extension URLSession: URLSessionProtocol {}
+
 protocol APIClientProtocol: Sendable {
     func dataTask(_ request: URLRequest) async throws -> MyURLResponse
 }
 
 struct APIClientURLSession: APIClientProtocol {
+    private let session: URLSessionProtocol
+
+    init(session: URLSessionProtocol = URLSession.shared) {
+        self.session = session
+    }
+
     func dataTask(_ request: URLRequest) async throws -> MyURLResponse {
         let (data, urlResponse): (Data, URLResponse)
         do {
-            (data, urlResponse) = try await URLSession.shared.data(for: request)
+            (data, urlResponse) = try await session.data(for: request)
         } catch let urlError as URLError where urlError.code == .notConnectedToInternet
                                             || urlError.code == .networkConnectionLost {
             throw NetworkError.noConnection
