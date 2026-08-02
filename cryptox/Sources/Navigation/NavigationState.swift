@@ -27,6 +27,7 @@ final class NavigationState: NavigationStateProtocol, ObservableObject {
     }
     
     func navigateBack() {
+        guard !path.isEmpty else { return }
         path.removeLast()
     }
     

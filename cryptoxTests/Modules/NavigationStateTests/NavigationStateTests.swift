@@ -47,6 +47,11 @@ class NavigationStateTests {
         navigationState.navigateToRoot()
         #expect(navigationState.path.isEmpty, "Expected to pop back to Coin List")
     }
+
+    @Test func navigateBackOnEmptyPathDoesNothing() {
+        navigationState.navigateBack()
+        #expect(navigationState.path.isEmpty, "Expected navigateBack on an empty path to be a no-op instead of crashing")
+    }
     
     private func getMockCoinDetailsRoute() throws -> AppRoute {
         let domainModel = try #require(MockDomainData.coins.first)

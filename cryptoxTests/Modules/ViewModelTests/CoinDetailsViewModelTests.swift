@@ -33,13 +33,40 @@ final class CoinDetailsViewModelTests {
         #expect(viewModel.domainModel.id == domainModel.id, "Domain model should match the provided domain model")
     }
     
-    @Test func fetchUpdatedCoinData() async {
-        
+    @Test func fetchUpdatedCoinDataOnFailureKeepsInitialModel() async {
+        // mockService.mockDetailsResponse is nil by default, so this exercises the failure path.
         await viewModel.fetchUpdatedCoinData()
 
         #expect(!viewModel.isLoading, "Loading state should be false after fetching data")
-        #expect(viewModel.domainModel.id == domainModel.id, "Domain model should be updated correctly")
-        #expect(viewModel.coin.id == initialModel.id, "Presentation model should be updated correctly")
+        #expect(viewModel.errorMessage != nil, "Error message should be set when the fetch fails")
+        #expect(viewModel.domainModel.id == domainModel.id, "Domain model should be left untouched on failure")
+        #expect(viewModel.coin.id == initialModel.id, "Presentation model should be left untouched on failure")
+    }
+
+    @Test func fetchUpdatedCoinDataOnSuccessUpdatesModel() async throws {
+        let initialDomainModel = try #require(MockDomainData.coins.first) // bitcoin
+        let updatedDomainModel = try #require(MockDomainData.coins.last)  // ethereum
+        let updatedPresentationModel = MockViewData.coinDetailsView       // ethereum-based
+
+        let freshViewModel = CoinDetailsViewModel(
+            navigationState: mockNavigationState,
+            service: mockService,
+            mapper: mockMapper,
+            domainModel: initialDomainModel,
+            initialModel: try #require(CoinModelMapper().mapToDetails(initialDomainModel))
+        )
+
+        mockService.mockDetailsResponse = MockNetworkData.coins.last
+        mockMapper.detailsMockMappedCoin = updatedDomainModel
+        mockMapper.detailsPresentationModel = updatedPresentationModel
+
+        await freshViewModel.fetchUpdatedCoinData()
+
+        #expect(!freshViewModel.isLoading, "Loading state should be false after fetching data")
+        #expect(freshViewModel.errorMessage == nil, "Error message should be nil after a successful fetch")
+        #expect(freshViewModel.domainModel.id == updatedDomainModel.id, "Domain model should be replaced with the fetched coin")
+        #expect(freshViewModel.coin.id == updatedPresentationModel.id, "Presentation model should be replaced with the fetched coin")
+        #expect(freshViewModel.domainModel.id != initialDomainModel.id, "Sanity check: fetched coin should differ from the initial coin")
     }
 
     @Test func transformToPresentationModel() throws {
